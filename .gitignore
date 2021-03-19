@@ -1,3 +1,6 @@
-# data-storing files
+# Btye-compiled
+__pycache__/
+
+# Data-storing files
 *.json
 *.apkg
