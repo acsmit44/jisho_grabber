@@ -21,6 +21,7 @@ class WordSearch:
         results = self.get_soup("https://jisho.org/search/")
         self.primary_tag = results.find('div', id='primary')
         self.word_tag = self.primary_tag
+        self.process_next_word()
     
     def get_soup(self, url):
         url = url + self.searched_word + '?page=' + str(self.page)
@@ -89,9 +90,11 @@ class WordSearch:
         self.word_dict['Meanings'] = meanings_list
     
     def process_next_word(self):
+        # increment buffer if cur_word is not pointing to the head of the array
         if self.cur_word < self.max_words - 1:
             self.cur_word += 1
             self.word_dict = self.word_buffer[self.cur_word]
+        # process a new word otherwise
         else:
             new_word = self.next_word()
             if new_word:
@@ -102,6 +105,7 @@ class WordSearch:
                 self.word_buffer.append(self.word_dict)
     
     def go_back(self):
+        # decrement buffer if possible
         if self.cur_word > 0:
             self.cur_word -= 1
             self.word_dict = self.word_buffer[self.cur_word]
