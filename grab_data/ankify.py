@@ -8,8 +8,7 @@ Description:    The description for Anki notes, models, and decks are kept
 
 import genanki
 
-engtojpn_front = '''
-<span style=" font-size: 25px;  ">{{Meaning}}</span>'''
+engtojpn_front = '''<span style=" font-size: 25px;  ">{{Meaning}}</span>'''
 
 engtojpn_back  = '''{{FrontSide}}
 
@@ -21,8 +20,7 @@ engtojpn_back  = '''{{FrontSide}}
 <span style="font-size: 22px; ">JLPT Level: N{{JLPT Level}}<br></span>
 <span><a  href="http://jisho.org/word/{{Word}}">Jisho</a></span>'''
 
-jpntoeng_front = '''
-<span style=" font-size: 25px;  ">{{Word}}</span>'''
+jpntoeng_front = '''<span style=" font-size: 25px;  ">{{Word}}</span>'''
 
 jpntoeng_back  = '''{{FrontSide}}
 
@@ -34,8 +32,7 @@ jpntoeng_back  = '''{{FrontSide}}
 <span style="font-size: 22px; ">JLPT Level: N{{JLPT Level}}<br></span>
 <span><a  href="http://jisho.org/word/{{Word}}">Jisho reference</a></span>'''
 
-CSS = '''
-.card {
+CSS = '''.card {
  font-family: Arial;
  font-size: 20px;
  text-align: center;

@@ -108,6 +108,7 @@ class WordSearch:
         else:
             print("Error: Cannot go back.")
 
+# Tests attempts to go forward and backward in the search results
 jisho_word = WordSearch('best friend')
 for i in range(5):
     jisho_word.process_next_word()
