@@ -36,14 +36,15 @@ class WordSearch:
             if self.primary_tag is None:
                 self.error_msg = 'Error: invalid search.'
             else:
-                self.all_words = list(self.primary_tag.find_all('div', class_='concept_light clearfix'))
-                self.max_words = len(self.all_words)
+                new_words = list(self.primary_tag.find_all('div', class_='concept_light clearfix'))
+                self.all_words.extend(new_words)
+                self.max_words += len(new_words)
         elif self.cur_word == self.max_words:
             if self.primary_tag.find('a', class_='more') is not None:
                 self.primary_tag = self.get_soup().find('div', id='primary')
-                self.all_words = self.primary_tag.find_all('div', class_='concept_light clearfix')
-                self.max_words += len(self.all_words)
-                self.cur_word = 0
+                new_words = list(self.primary_tag.find_all('div', class_='concept_light clearfix'))
+                self.all_words.extend(new_words)
+                self.max_words += len(new_words)
 
     def get_word_and_reading(self):
         word_info = self.word_tag.find('div', class_='concept_light-representation')
@@ -53,10 +54,13 @@ class WordSearch:
         # list comprehension to extract kanji readings
         furigana = [furi.get_text().strip() for furi in \
                     word_info.find('span', class_='furigana').find_all('span')]
-        reading = ""
-        for cur in range(len(word)):
-            # append current char if hiragana, and append kanji reading otherwise
-            reading += word[cur] if isKana(word[cur]) else furigana[cur]
+        if word_info.find('ruby', class_='furigana-justify') is not None:
+            reading = word_info.find('ruby', class_='furigana-justify').find('rt').get_text().strip()
+        else:
+            reading = ""
+            for cur in range(len(word)):
+                # append current char if hiragana, and append kanji reading otherwise
+                reading += word[cur] if isKana(word[cur]) else furigana[cur]
         self.word_dict['Word'] = word
         self.word_dict['Reading'] = reading
     
@@ -108,20 +112,12 @@ class WordSearch:
         self.error_msg = "No error."
         # decrement buffer if possible
         if self.cur_word > 0:
+            self.load_data()
             self.cur_word -= 1
-            self.load_data()
-        elif self.page > 1:
-            self.page -= 2
-            self.max_words -= len(self.all_words)
-            self.cur_word = self.max_words - 1
-            self.primary_tag = self.get_soup().find('div', id='primary')
-            self.all_words = list(self.primary_tag.find_all('div', class_='concept_light clearfix'))
-            self.load_data()
         else:
             self.error_msg = "Error: Cannot go back."
             print(self.error_msg)
 
-    
     def load_data(self):
         self.word_dict = {}
         self.word_tag = self.all_words[self.cur_word]
@@ -144,9 +140,9 @@ if __name__ == '__main__':
         jisho_word.prev_word()
     for i in range(19):
         jisho_word.next_word()
-    for i in range(3):
+    for i in range(25):
         jisho_word.next_word()
     for i in range(19):
-        jisho_word.prev_word()
+        jisho_word.next_word()
     for i in range(19):
         jisho_word.prev_word()
