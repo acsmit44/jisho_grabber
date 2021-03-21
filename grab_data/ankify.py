@@ -53,6 +53,7 @@ jisho_vocab = genanki.Model(
         {'name': 'Meaning'},
         {'name': 'Parts of speech'},
         {'name': 'JLPT Level'}
+        # Add common word
     ],
     templates=[
         {
