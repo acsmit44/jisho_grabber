@@ -100,6 +100,10 @@ def process_search_results(searched_word):
         all_words.append(process_word(word_result))
     return all_words
 
+results = get_soup("https://jisho.org/search/" + searched_word)
+primary_tag = results.find('div', id='primary')
+word_tag = primary_tag.find('div', class_='concept_light clearfix')
+
 # request page and parse html
 all_words = process_search_results("best friend #word")
 test = 1

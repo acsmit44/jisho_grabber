@@ -16,8 +16,7 @@ class WordSearch:
     word_buffer = []
 
     def __init__(self, searched_word):
-        self.searched_word = searched_word
-        searched_word = searched_word.replace(' ', '%20').replace('#', '%23')
+        self.searched_word = searched_word.replace(' ', '%20').replace('#', '%23')
         results = self.get_soup("https://jisho.org/search/")
         self.primary_tag = results.find('div', id='primary')
         self.word_tag = self.primary_tag
@@ -33,7 +32,9 @@ class WordSearch:
         return soup
 
     def next_word(self):
-        if self.word_tag is None:
+        if self.primary_tag is None:
+            print("Error: Invalid search")
+        elif self.word_tag is None:
             if self.primary_tag.find('a', class_='more') is not None:
                 self.primary_tag = self.get_soup("https://jisho.org/search/")
                 self.word_tag = self.primary_tag.find('div', class_='concept_light clearfix')
@@ -113,7 +114,7 @@ class WordSearch:
             print("Error: Cannot go back.")
 
 # Tests attempts to go forward and backward in the search results
-jisho_word = WordSearch('best friend')
+jisho_word = WordSearch('taste')
 for i in range(5):
     jisho_word.process_next_word()
 for i in range(5):
