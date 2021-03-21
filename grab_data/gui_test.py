@@ -108,13 +108,25 @@ class SearchFrame(wx.Frame):
         return bool(self.word_search.error_msg == "No error.")
 
     def set_fields(self):
+        self.word_result.Clear()
+        self.word_reading.Clear()
+        self.jlpt_level.Clear()
+        self.common_word.Clear()
+        self.meanings_body.Clear()
         self.word_result.SetLabel(self.word_search.word_dict['Word'])
         self.word_reading.SetLabel(self.word_search.word_dict['Reading'])
         self.jlpt_level.SetLabel(self.word_search.word_dict['JLPT'])
         self.common_word.SetLabel(self.word_search.word_dict['Common'])
+        for cur, meaning in enumerate(self.word_search.word_dict['Meanings']):
+            if meaning['Tags'] is not None:
+                self.meanings_body.AppendText("{}. {}\n".format(cur + 1, meaning['Tags']))
+            self.meanings_body.AppendText("{}. {}\n\n".format(cur + 1, meaning['Meaning(s)']))
 
     def search_word(self, event):
         self.word_search = WordSearch(self.search_field.GetValue())
+        print(self.search_field.GetValue())
+        print(self.word_search.searched_word)
+        print(self.word_search.word_dict['Meanings'][0])
         self.check_error()
 
 if __name__ == '__main__':
