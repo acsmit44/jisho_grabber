@@ -14,6 +14,7 @@ class WordSearch:
     word_tag, primary_tag = None, None
     word_dict = {}
     word_buffer = []
+    error_msg = "No error."
 
     def __init__(self, searched_word):
         self.searched_word = searched_word.replace(' ', '%20').replace('#', '%23')
@@ -32,14 +33,17 @@ class WordSearch:
         return soup
 
     def next_word(self):
+        self.error_msg = "No error."
         if self.primary_tag is None:
-            print("Error: Invalid search")
+            self.error_msg = "Error: Invalid search"
+            print(self.error_msg)
         elif self.word_tag is None:
             if self.primary_tag.find('a', class_='more') is not None:
                 self.primary_tag = self.get_soup("https://jisho.org/search/")
                 self.word_tag = self.primary_tag.find('div', class_='concept_light clearfix')
             else:
-                print("Error: No more words")
+                self.error_msg = "Error: No more words"
+                print(self.error_msg)
         else:
             self.word_tag = self.word_tag.find_next('div', class_='concept_light clearfix')
         not_none = bool(self.word_tag)
@@ -66,11 +70,11 @@ class WordSearch:
         self.word_tag_info = self.word_tag.find('div', class_='concept_light-status')
         tags = [tag.get_text().strip() for tag in \
                 self.word_tag_info.find_all('span', class_='concept_light-tag')]
-        self.word_dict['Common word'] = 'No'
+        self.word_dict['Common'] = 'No'
         self.word_dict['JLPT'] = 'N/A'
         for tag in tags:
-            if tag.find('Common word') != -1:
-                self.word_dict['Common word'] = 'Yes'
+            if tag.find('Common') != -1:
+                self.word_dict['Common'] = 'Yes'
             if tag.find('JLPT') != -1:
                 self.word_dict['JLPT'] = tag.split(" ")[1][1]
     
@@ -91,6 +95,7 @@ class WordSearch:
         self.word_dict['Meanings'] = meanings_list
     
     def process_next_word(self):
+        self.error_msg = "No error."
         # increment buffer if cur_word is not pointing to the head of the array
         if self.cur_word < self.max_words - 1:
             self.cur_word += 1
@@ -106,26 +111,29 @@ class WordSearch:
                 self.word_buffer.append(self.word_dict)
     
     def go_back(self):
+        self.error_msg = "No error."
         # decrement buffer if possible
         if self.cur_word > 0:
             self.cur_word -= 1
             self.word_dict = self.word_buffer[self.cur_word]
         else:
-            print("Error: Cannot go back.")
+            self.error_msg = "Error: Cannot go back."
+            print(self.error_msg)
 
-# Tests attempts to go forward and backward in the search results
-jisho_word = WordSearch('taste')
-for i in range(5):
-    jisho_word.process_next_word()
-for i in range(5):
-    jisho_word.process_next_word()
-for i in range(3):
-    jisho_word.go_back()
-for i in range(5):
-    jisho_word.process_next_word()
-for i in range(15):
-    jisho_word.go_back()
-for i in range(19):
-    jisho_word.process_next_word()
-for i in range(3):
-    jisho_word.process_next_word()
+if __name__ == '__main__':
+    # Tests attempts to go forward and backward in the search results
+    jisho_word = WordSearch('taste')
+    for i in range(5):
+        jisho_word.process_next_word()
+    for i in range(5):
+        jisho_word.process_next_word()
+    for i in range(3):
+        jisho_word.go_back()
+    for i in range(5):
+        jisho_word.process_next_word()
+    for i in range(15):
+        jisho_word.go_back()
+    for i in range(19):
+        jisho_word.process_next_word()
+    for i in range(3):
+        jisho_word.process_next_word()
