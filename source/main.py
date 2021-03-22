@@ -15,6 +15,7 @@ from search_gui import SearchFrame
 from ankify import jisho_vocab, jisho_deck
 
 if __name__ == '__main__':
+    # get paths for file dumping and make sure they exist
     dumpsdir = os.path.join(os.getcwd(), 'vocab_dumps')
     if not os.path.isdir(dumpsdir):
         sys.exit("Error: vocab_dumps folder is missing or you are in the wrong" +\
@@ -38,6 +39,7 @@ if __name__ == '__main__':
     frame = SearchFrame()
     app.MainLoop()
 
+    # add new vocab to existing vocab and export as an Anki deck
     all_vocab.extend(frame.fields_list)
     for note_fields in all_vocab:
         new_note = genanki.Note(

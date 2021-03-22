@@ -16,11 +16,14 @@ class WordSearch:
         self.word_dict = {}
         self.all_words = []
         self.error_msg = "No error."
+        # format searched word for url, i.e. searching "to run #word" should
+        # really be "to%20run%20%23word"
         self.searched_word = searched_word.replace(' ', '%20').replace('#', '%23')
         self.check_search()
         self.load_data()
     
     def get_soup(self):
+        # inc page and load webpage data
         self.page += 1
         url = "https://jisho.org/search/" + self.searched_word + '?page=' + str(self.page)
         webpage = requests.get(url)
@@ -30,6 +33,7 @@ class WordSearch:
         return soup
     
     def check_search(self):
+        # if new search, try getting results
         if self.max_words == 0:
             results = self.get_soup()
             self.primary_tag = results.find('div', id='primary')
@@ -39,6 +43,7 @@ class WordSearch:
                 new_words = list(self.primary_tag.find_all('div', class_='concept_light clearfix'))
                 self.all_words.extend(new_words)
                 self.max_words += len(new_words)
+        # if the current word is the last word on the page, try getting the next page
         elif self.cur_word == self.max_words - 1:
             if self.primary_tag.find('a', class_='more') is not None:
                 self.primary_tag = self.get_soup().find('div', id='primary')
@@ -51,9 +56,10 @@ class WordSearch:
         # list comprehension to extract whole word as string
         word = "".join([text.get_text().strip() for text in
                         word_info.find_all('span', class_='text')])
-        # list comprehension to extract kanji readings
+        # list comprehension to extract kanji readings (furigana on Jisho)
         furigana = [furi.get_text().strip() for furi in \
                     word_info.find('span', class_='furigana').find_all('span')]
+        # weird version of furigana tag that crashed my program once
         if word_info.find('ruby', class_='furigana-justify') is not None:
             reading = word_info.find('ruby', class_='furigana-justify').find('rt').get_text().strip()
         else:
@@ -66,6 +72,7 @@ class WordSearch:
     
     def get_word_info(self):
         self.word_tag_info = self.word_tag.find('div', class_='concept_light-status')
+        # get all tags, like wanikani level, common word y/n, and JLPT level
         tags = [tag.get_text().strip() for tag in \
                 self.word_tag_info.find_all('span', class_='concept_light-tag')]
         self.word_dict['Common'] = 'No'
@@ -77,24 +84,29 @@ class WordSearch:
                 self.word_dict['JLPT'] = 'N' + tag.split(" ")[1][1]
     
     def get_word_meanings(self):
-        meanings_dict = {'Meaning(s)': '', 'Tags': 'N/A'}
+        meanings_dict = {}
         meanings_list = []
+        # get the parent meaning tag, called meanings-wrapper
         meanings_info = self.word_tag.find('div', class_='meanings-wrapper')
+        # get all meanings and parts of speech for each meaning
         meanings_children = meanings_info.findChildren('div', class_='meaning-wrapper', \
                                                        recursive=False)
         for child in meanings_children:
+            meanings_dict = {'Meaning(s)': '', 'Tags': 'N/A'}
             meaning = child.find('span', class_='meaning-meaning')
             if meaning is not None:
                 meanings_dict['Meaning(s)'] = meaning.get_text().strip()
             else:
                 continue
+            # some words are labeled with parts of speech and some aren't, so
+            # check for a part of speech
             if child.previous_sibling is not None and child.previous_sibling.has_attr('class') \
                and child.previous_sibling['class'][0] == 'meaning-tags':
+               # ignore wikipedia definitions
                 if child.previous_sibling.get_text().strip().find('Wikipedia') != -1:
                     continue
                 meanings_dict['Tags'] = child.previous_sibling.get_text().strip()
             meanings_list.append(meanings_dict)
-            meanings_dict = {'Meaning(s)': '', 'Tags': 'N/A'}
         self.word_dict['Meanings'] = meanings_list
     
     def next_word(self):
@@ -119,6 +131,7 @@ class WordSearch:
         self.load_data()
 
     def load_data(self):
+        # make sure index is not out of bounds
         if self.cur_word >= 0 and self.cur_word < self.max_words:
             self.word_dict = {}
             self.word_tag = self.all_words[self.cur_word]
