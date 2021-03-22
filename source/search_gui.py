@@ -125,13 +125,13 @@ class SearchFrame(wx.Frame):
     
     def check_error(self):
         self.search_error.SetLabel(self.word_search.error_msg)
-        if self.word_search.error_msg == "No error.":
+        if self.word_search.error_code == 0:
             self.search_error.SetForegroundColour(self.green)
             self.set_fields()
         else:
             self.search_error.SetForegroundColour(self.red)
         self.search_error.GetContainingSizer().Layout()
-        return bool(self.word_search.error_msg == "No error.")
+        return bool(self.word_search.error_code == 0)
     
     def reset_textctrls(self):
         self.word_result.Clear()
@@ -166,7 +166,7 @@ class SearchFrame(wx.Frame):
     def search_word(self, event):
         self.word_search = WordSearch(self.search_field.GetValue())
         self.check_error()
-        if self.word_search.error_msg != "No error.":
+        if self.word_search.error_code != 0:
             self.reset_textctrls()
     
     def next_result(self, event):

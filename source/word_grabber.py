@@ -16,6 +16,7 @@ class WordSearch:
         self.word_dict = {}
         self.all_words = []
         self.error_msg = "No error."
+        self.error_code = 0
         # format searched word for url, i.e. searching "to run #word" should
         # really be "to%20run%20%23word"
         self.searched_word = searched_word.replace(' ', '%20').replace('#', '%23')
@@ -41,6 +42,7 @@ class WordSearch:
                 self.primary_tag is not None else None
             if exact_block is None:
                 self.error_msg = 'Error: No results.  Please try again.'
+                self.error_code = 1
             else:
                 new_words = list(exact_block.find_all('div', class_='concept_light clearfix'))
                 self.all_words.extend(new_words)
@@ -81,7 +83,7 @@ class WordSearch:
         self.word_dict['JLPT'] = 'N/A'
         for tag in tags:
             if tag.find('Common') != -1:
-                self.word_dict['Common'] = 'Common<br>'
+                self.word_dict['Common'] = 'Common word<br>'
             if tag.find('JLPT') != -1:
                 self.word_dict['JLPT'] = 'N' + tag.split(" ")[1][1]
     
@@ -113,23 +115,25 @@ class WordSearch:
     
     def next_word(self):
         self.error_msg = "No error."
+        self.error_code = 0
         self.check_search()
         # increment buffer if cur_word is not pointing to the head of the array
         if self.cur_word < self.max_words - 1:
             self.cur_word += 1
         else:
             self.error_msg = "Error: Cannot go forward."
-            print(self.error_msg)
+            self.error_code = 3
         self.load_data()
     
     def prev_word(self):
         self.error_msg = "No error."
+        self.error_code = 0
         # decrement buffer if possible
         if self.cur_word > 0:
             self.cur_word -= 1
         else:
             self.error_msg = "Error: Cannot go back."
-            print(self.error_msg)
+            self.error_code = 2
         self.load_data()
 
     def load_data(self):
