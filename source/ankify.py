@@ -48,7 +48,7 @@ CSS = '''.card {
 
 jisho_vocab = genanki.Model(
     1568352783,
-    'Japanese Vocab',
+    'Jisho Search Vocab',
     fields=[
         {'name': 'Word'},
         {'name': 'Reading'},
