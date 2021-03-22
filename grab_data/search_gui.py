@@ -99,7 +99,7 @@ class SearchFrame(wx.Frame):
 
         choice_sizer = wx.BoxSizer(wx.HORIZONTAL)
         choice_label = wx.StaticText(self, label='Choose a meaning:', size=(-1, 20))
-        choice_sizer.Add(choice_label, proportion=0)
+        choice_sizer.Add(choice_label, proportion=0, flag=wx.RIGHT|wx.LEFT, border=8)
         self.meaning_select = wx.Choice(self)
         self.meaning_select.Bind(wx.EVT_CHOICE, self.get_meaning_choice)
         choice_sizer.Add(self.meaning_select, proportion=0)
@@ -144,13 +144,17 @@ class SearchFrame(wx.Frame):
         self.jlpt_level.SetValue(self.word_search.word_dict['JLPT'])
         self.common_word.SetValue(self.word_search.word_dict['Common'])
         for cur, meaning in enumerate(self.word_search.word_dict['Meanings']):
-            if meaning['Tags'] is not None:
+            if meaning['Tags'] != 'N/A':
                 self.meanings_body.AppendText("{}. {}\n".format(cur + 1, meaning['Tags']))
             self.meanings_body.AppendText("{}. {}\n\n".format(cur + 1, meaning['Meaning(s)']))
         self.meaning_select.AppendItems([str(i + 1) for i in \
             range(len(self.word_search.word_dict['Meanings']))])
-        self.meaning_num = 0 if len(self.word_search.word_dict['Meanings']) > 0 \
-            else -1
+        if len(self.word_search.word_dict['Meanings']) > 0:
+            self.meaning_num = 0
+            self.meaning_select.SetSelection(0)
+        else:
+            self.meaning_num = -1
+        self.add_result.SetLabel("")
 
     def search_word(self, event):
         self.word_search = WordSearch(self.search_field.GetValue())
@@ -166,7 +170,6 @@ class SearchFrame(wx.Frame):
     
     def get_meaning_choice(self, event):
         self.meaning_num = self.meaning_select.GetSelection()
-        print(self.meaning_num)
     
     def add_note(self, event):
         if self.word_search.word_tag is None:
@@ -176,8 +179,8 @@ class SearchFrame(wx.Frame):
             note_fields = [
                 self.word_search.word_dict['Word'],
                 self.word_search.word_dict['Reading'],
-                '',
-                '',
+                '', # Meanings
+                '', # Parts of speech
                 self.word_search.word_dict['JLPT'],
                 self.word_search.word_dict['Common']
             ]
