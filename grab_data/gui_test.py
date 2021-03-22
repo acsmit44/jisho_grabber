@@ -14,10 +14,10 @@ class SearchFrame(wx.Frame):
     word_search = WordSearch("")
     green = (0,150,0)
     red = (255,0,0)
+    meaning_num = 0
 
     def __init__(self):
         super().__init__(parent=None, title='Jisho Grabber', size=(700, 700))
-
         vert_sizer = wx.BoxSizer(wx.VERTICAL)
 
         hsizer_1 = wx.BoxSizer(wx.HORIZONTAL)
@@ -93,10 +93,26 @@ class SearchFrame(wx.Frame):
         vert_sizer.Add(wx.StaticLine(self, style=wx.LI_HORIZONTAL), 0, \
                        wx.ALL|wx.EXPAND, 10)
 
+        choice_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        choice_label = wx.StaticText(self, label='Choose a meaning:', size=(-1, 20))
+        choice_sizer.Add(choice_label, proportion=0)
+        self.meaning_select = wx.Choice(self)
+        self.meaning_select.Bind(wx.EVT_CHOICE, self.get_meaning_choice)
+        choice_sizer.Add(self.meaning_select, proportion=0)
+        vert_sizer.Add(choice_sizer, proportion=0, flag=wx.RIGHT| \
+                       wx.ALIGN_CENTER_HORIZONTAL, border=8)
+
         hsizer_5 = wx.BoxSizer(wx.HORIZONTAL)
         self.add_button = wx.Button(self, label='Add to Deck')
         hsizer_5.Add(self.add_button, proportion=1, flag=wx.RIGHT|wx.LEFT|wx.BOTTOM, border=8)
         vert_sizer.Add(hsizer_5, flag=wx.EXPAND)
+
+        self.add_result = wx.StaticText(self, label='')
+        self.add_result.SetForegroundColour(self.green)
+        font = wx.Font(18, wx.DECORATIVE, wx.ITALIC, wx.NORMAL)
+        self.add_result.SetFont(font)
+        vert_sizer.Add(self.add_result, proportion=0, flag=wx.BOTTOM| \
+                       wx.ALIGN_CENTER_HORIZONTAL, border=8)
 
         self.SetSizer(vert_sizer)
         self.Show()
@@ -117,6 +133,7 @@ class SearchFrame(wx.Frame):
         self.jlpt_level.Clear()
         self.common_word.Clear()
         self.meanings_body.Clear()
+        self.meaning_select.Clear()
         self.word_result.SetValue(self.word_search.word_dict['Word'])
         self.word_reading.SetValue(self.word_search.word_dict['Reading'])
         self.jlpt_level.SetValue(self.word_search.word_dict['JLPT'])
@@ -125,6 +142,8 @@ class SearchFrame(wx.Frame):
             if meaning['Tags'] is not None:
                 self.meanings_body.AppendText("{}. {}\n".format(cur + 1, meaning['Tags']))
             self.meanings_body.AppendText("{}. {}\n\n".format(cur + 1, meaning['Meaning(s)']))
+        self.meaning_select.AppendItems([str(i + 1) for i in \
+            range(len(self.word_search.word_dict['Meanings']))])
 
     def search_word(self, event):
         self.word_search = WordSearch(self.search_field.GetValue())
@@ -137,6 +156,9 @@ class SearchFrame(wx.Frame):
     def prev_result(self, event):
         self.word_search.prev_word()
         self.check_error()
+    
+    def get_meaning_choice(self, event):
+        self.meaning_num = self.meaning_select.GetSelection()
 
 if __name__ == '__main__':
     app = wx.App()
