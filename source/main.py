@@ -20,8 +20,7 @@ if __name__ == '__main__':
         sys.exit("Error: vocab_dumps folder is missing or you are in the wrong" +\
                  "directory.  Please try again.")
     jsonpath = os.path.join(dumpsdir, 'vocab_words.json')
-    ankiallpath = os.path.join(dumpsdir, 'all_words.apkg')
-    ankinewpath = os.path.join(dumpsdir, 'new_words.apkg')
+    ankipath = os.path.join(dumpsdir, 'jisho_search_deck.apkg')
 
     # create json if none exists
     if not os.path.exists(jsonpath):
@@ -39,15 +38,7 @@ if __name__ == '__main__':
     frame = SearchFrame()
     app.MainLoop()
 
-    for new_note_fields in frame.fields_list:
-        new_note = genanki.Note(
-            model=jisho_vocab,
-            fields=new_note_fields
-        )
-        jisho_deck.add_note(new_note)
-    if len(frame.fields_list) > 0:
-        genanki.Package(jisho_deck).write_to_file(ankinewpath)
-
+    all_vocab.extend(frame.fields_list)
     for note_fields in all_vocab:
         new_note = genanki.Note(
             model=jisho_vocab,
@@ -55,9 +46,7 @@ if __name__ == '__main__':
         )
         jisho_deck.add_note(new_note)
     if len(all_vocab) > 0:
-        genanki.Package(jisho_deck).write_to_file(ankiallpath)
-    
-    all_vocab.extend(frame.fields_list)
+        genanki.Package(jisho_deck).write_to_file(ankipath)
 
     with open(jsonpath, 'w') as outfile:
         print("Dumping words into json...")
