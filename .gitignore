@@ -4,3 +4,6 @@ __pycache__/
 # Data-storing files
 *.json
 *.apkg
+
+# Batch file
+*.bat
