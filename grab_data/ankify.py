@@ -18,6 +18,7 @@ engtojpn_back  = '''{{FrontSide}}
 
 <span style="font-size: 22px; ">Parts of speech: {{Parts of speech}}<br></span>
 <span style="font-size: 22px; ">JLPT Level: N{{JLPT Level}}<br></span>
+<span style="font-size: 22px; ">Common word? : {{Common word}}<br></span>
 <span><a  href="http://jisho.org/word/{{Word}}">Jisho</a></span>'''
 
 jpntoeng_front = '''<span style=" font-size: 25px;  ">{{Word}}</span>'''
@@ -30,6 +31,7 @@ jpntoeng_back  = '''{{FrontSide}}
 
 <span style="font-size: 22px; ">Parts of speech: {{Parts of speech}}<br></span>
 <span style="font-size: 22px; ">JLPT Level: N{{JLPT Level}}<br></span>
+<span style="font-size: 22px; ">Common word? : {{Common word}}<br></span>
 <span><a  href="http://jisho.org/word/{{Word}}">Jisho reference</a></span>'''
 
 CSS = '''.card {
@@ -52,8 +54,8 @@ jisho_vocab = genanki.Model(
         {'name': 'Reading'},
         {'name': 'Meaning'},
         {'name': 'Parts of speech'},
-        {'name': 'JLPT Level'}
-        # Add common word
+        {'name': 'JLPT Level'},
+        {'name': 'Common word'}
     ],
     templates=[
         {
@@ -78,7 +80,8 @@ jisho_deck = genanki.Deck(
 # Example of creating a new note
 new_note = genanki.Note(
     model=jisho_vocab,
-    fields=['味覚', 'みかく', 'taste; palate; sense of taste', 'Na-adjective, Noun', '1']
+    fields=['味覚', 'みかく', 'taste; palate; sense of taste', \
+            'Na-adjective, Noun', '1', 'Yes']
 )
 
 jisho_deck.add_note(new_note)

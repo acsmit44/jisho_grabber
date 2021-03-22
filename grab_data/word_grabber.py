@@ -37,7 +37,7 @@ class WordSearch:
             results = self.get_soup()
             self.primary_tag = results.find('div', id='primary')
             if self.primary_tag is None:
-                self.error_msg = 'Error: invalid search.'
+                self.error_msg = 'Error: Invalid search.'
             else:
                 new_words = list(self.primary_tag.find_all('div', class_='concept_light clearfix'))
                 self.all_words.extend(new_words)
@@ -131,7 +131,7 @@ class WordSearch:
 
 if __name__ == '__main__':
     # Tests attempts to go forward and backward in the search results
-    jisho_word = WordSearch('taste')
+    jisho_word = WordSearch('')
     for i in range(5):
         jisho_word.next_word()
     for i in range(5):
