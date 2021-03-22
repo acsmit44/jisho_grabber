@@ -37,10 +37,12 @@ class WordSearch:
         if self.max_words == 0:
             results = self.get_soup()
             self.primary_tag = results.find('div', id='primary')
-            if self.primary_tag is None:
+            exact_block = self.primary_tag.find('div', class_='exact_block') if \
+                self.primary_tag is not None else None
+            if exact_block is None:
                 self.error_msg = 'Error: No results.  Please try again.'
             else:
-                new_words = list(self.primary_tag.find_all('div', class_='concept_light clearfix'))
+                new_words = list(exact_block.find_all('div', class_='concept_light clearfix'))
                 self.all_words.extend(new_words)
                 self.max_words += len(new_words)
         # if the current word is the last word on the page, try getting the next page
@@ -75,11 +77,11 @@ class WordSearch:
         # get all tags, like wanikani level, common word y/n, and JLPT level
         tags = [tag.get_text().strip() for tag in \
                 self.word_tag_info.find_all('span', class_='concept_light-tag')]
-        self.word_dict['Common'] = 'No'
+        self.word_dict['Common'] = ''
         self.word_dict['JLPT'] = 'N/A'
         for tag in tags:
             if tag.find('Common') != -1:
-                self.word_dict['Common'] = 'Yes'
+                self.word_dict['Common'] = 'Common<br>'
             if tag.find('JLPT') != -1:
                 self.word_dict['JLPT'] = 'N' + tag.split(" ")[1][1]
     
