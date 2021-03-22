@@ -6,11 +6,11 @@
 
 ## Dependencies
 
-This program was written in Python version 3.8.5.  It depends on four Python libraries: BeautifulSoup4, requests, wxPython, and [genanki](https://github.com/kerrickstaley/genanki).  BeautifulSoup4, requests, and wxPython can be installed with a simple `pip install {library name}` command on both Windows and Linux.  Installing genanki is very simple as well.  First, clone the repository.  Then, on Linux, cd into the repository directory and use `make` to run the Makefile, which will do the work for you.  On Windows, open a Powershell window as admin, cd into the repository directory, and run the command `python setup.py install --user` to install (or `python3` depending on your command shortcut).
+This program was written in Python version 3.8.5.  It depends on four Python libraries: BeautifulSoup4, requests, wxPython, and [genanki](https://github.com/kerrickstaley/genanki).  BeautifulSoup4, requests, and wxPython can be installed with a simple `pip install {library name}` command on both Windows (I used PowerShell and it worked just fine) and Linux.  Installing genanki is very simple as well.  First, clone the repository.  Then, on Linux, cd into the repository directory and use `make` to run the Makefile, which will do the work for you.  On Windows, open a Powershell window as admin, cd into the repository directory, and run the command `python setup.py install --user` to install (or `python3` depending on your command shortcut).
 
 ## Missing Features
 
-- For now, there is only one style of Anki deck available and it is hard-coded in.  It contains all fields of information that this program is currently capable of extracting from Jisho.  I may be adding custom Note and Model creation in the future, but doing so strays away from the primary focus of this program.
+- For now, there is only one style of Anki deck available and it is hard-coded in.  It contains all fields of information that this program is currently capable of extracting from Jisho.  I may be adding custom Note and Model creation in the future, but doing so strays away from the primary focus of this program, which is just a quick and dirty way of creating Anki notes from Jisho word searches.
 - Example sentences and additional information do not get added to the cards.  This might be a feature that I will implement once this program is fully-functional with the base features.
 
 ## Important Notes
