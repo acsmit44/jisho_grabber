@@ -20,24 +20,25 @@ if __name__ == '__main__':
         sys.exit("Error: vocab_dumps folder is missing or you are in the wrong" +\
                  "directory.  Please try again.")
     jsonpath = os.path.join(dumpsdir, 'vocab_words.json')
-    ankipath = os.path.join(dumpsdir, 'output.apkg')
+    ankiallpath = os.path.join(dumpsdir, 'all_words.apkg')
+    ankinewpath = os.path.join(dumpsdir, 'new_words.apkg')
 
     # create json if none exists
     if not os.path.exists(jsonpath):
-        print("Creating vocab_words.json...")
         with open(jsonpath, 'w') as outfile:
             json.dump([], outfile, indent=2)
 
     # load existing vocab words
     with open(jsonpath, 'r') as infile:
+        print("Loading json...")
         all_vocab = json.load(infile)
+        print("Finished loading json.")
 
     # run gui
     app = wx.App()
     frame = SearchFrame()
     app.MainLoop()
 
-    # create new notes for all words the user selected
     for new_note_fields in frame.fields_list:
         new_note = genanki.Note(
             model=jisho_vocab,
@@ -45,8 +46,20 @@ if __name__ == '__main__':
         )
         jisho_deck.add_note(new_note)
     if len(frame.fields_list) > 0:
-        genanki.Package(jisho_deck).write_to_file(ankipath)
-        all_vocab.extend(frame.fields_list)
+        genanki.Package(jisho_deck).write_to_file(ankinewpath)
+
+    for note_fields in all_vocab:
+        new_note = genanki.Note(
+            model=jisho_vocab,
+            fields=note_fields
+        )
+        jisho_deck.add_note(new_note)
+    if len(all_vocab) > 0:
+        genanki.Package(jisho_deck).write_to_file(ankiallpath)
+    
+    all_vocab.extend(frame.fields_list)
 
     with open(jsonpath, 'w') as outfile:
+        print("Dumping words into json...")
         json.dump(all_vocab, outfile, indent=2)
+        print("Json has taken a dump.  Or been dumped or whatever")
