@@ -34,7 +34,7 @@ class WordSearch:
             results = self.get_soup()
             self.primary_tag = results.find('div', id='primary')
             if self.primary_tag is None:
-                self.error_msg = 'Error: Invalid search.'
+                self.error_msg = 'Error: No results.  Please try again.'
             else:
                 new_words = list(self.primary_tag.find_all('div', class_='concept_light clearfix'))
                 self.all_words.extend(new_words)
@@ -74,10 +74,10 @@ class WordSearch:
             if tag.find('Common') != -1:
                 self.word_dict['Common'] = 'Yes'
             if tag.find('JLPT') != -1:
-                self.word_dict['JLPT'] = tag.split(" ")[1][1]
+                self.word_dict['JLPT'] = 'N' + tag.split(" ")[1][1]
     
     def get_word_meanings(self):
-        meanings_dict = {'Meaning(s)': '', 'Tags': ''}
+        meanings_dict = {'Meaning(s)': '', 'Tags': 'N/A'}
         meanings_list = []
         meanings_info = self.word_tag.find('div', class_='meanings-wrapper')
         meanings_children = meanings_info.findChildren('div', class_='meaning-wrapper', \
@@ -94,7 +94,7 @@ class WordSearch:
                     continue
                 meanings_dict['Tags'] = child.previous_sibling.get_text().strip()
             meanings_list.append(meanings_dict)
-            meanings_dict = {'Meaning(s)': '', 'Tags': ''}
+            meanings_dict = {'Meaning(s)': '', 'Tags': 'N/A'}
         self.word_dict['Meanings'] = meanings_list
     
     def next_word(self):
