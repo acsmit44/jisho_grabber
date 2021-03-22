@@ -12,6 +12,8 @@ from word_grabber import WordSearch
 # Needs to include word, reading, meanings, common or not, and JLPT level
 class SearchFrame(wx.Frame):
     word_search = WordSearch("")
+    green = (0,150,0)
+    red = (255,0,0)
 
     def __init__(self):
         super().__init__(parent=None, title='Jisho Grabber', size=(700, 700))
@@ -30,13 +32,15 @@ class SearchFrame(wx.Frame):
 
         hsizer_2 = wx.BoxSizer(wx.HORIZONTAL)
         self.back_button = wx.Button(self, label='Previous result')
+        self.back_button.Bind(wx.EVT_BUTTON, self.prev_result)
         self.next_button = wx.Button(self, label='Next result')
+        self.next_button.Bind(wx.EVT_BUTTON, self.next_result)
         hsizer_2.Add(self.back_button, proportion=1, flag=wx.LEFT, border=8)
         hsizer_2.Add(self.next_button, proportion=1, flag=wx.RIGHT, border=8)
         vert_sizer.Add(hsizer_2, flag=wx.EXPAND)
 
         self.search_error = wx.StaticText(self, label='No error.')
-        self.search_error.SetForegroundColour((0,255,0))
+        self.search_error.SetForegroundColour(self.green)
         font = wx.Font(18, wx.DECORATIVE, wx.ITALIC, wx.NORMAL)
         self.search_error.SetFont(font)
         vert_sizer.Add(self.search_error, proportion=0, flag=wx.TOP|wx.LEFT|wx.RIGHT| \
@@ -100,10 +104,10 @@ class SearchFrame(wx.Frame):
     def check_error(self):
         self.search_error.SetLabel(self.word_search.error_msg)
         if self.word_search.error_msg == "No error.":
-            self.search_error.SetForegroundColour((0,255,0))
+            self.search_error.SetForegroundColour(self.green)
             self.set_fields()
         else:
-            self.search_error.SetForegroundColour((255,0,0))
+            self.search_error.SetForegroundColour(self.red)
         self.search_error.GetContainingSizer().Layout()
         return bool(self.word_search.error_msg == "No error.")
 
@@ -113,10 +117,10 @@ class SearchFrame(wx.Frame):
         self.jlpt_level.Clear()
         self.common_word.Clear()
         self.meanings_body.Clear()
-        self.word_result.SetLabel(self.word_search.word_dict['Word'])
-        self.word_reading.SetLabel(self.word_search.word_dict['Reading'])
-        self.jlpt_level.SetLabel(self.word_search.word_dict['JLPT'])
-        self.common_word.SetLabel(self.word_search.word_dict['Common'])
+        self.word_result.SetValue(self.word_search.word_dict['Word'])
+        self.word_reading.SetValue(self.word_search.word_dict['Reading'])
+        self.jlpt_level.SetValue(self.word_search.word_dict['JLPT'])
+        self.common_word.SetValue(self.word_search.word_dict['Common'])
         for cur, meaning in enumerate(self.word_search.word_dict['Meanings']):
             if meaning['Tags'] is not None:
                 self.meanings_body.AppendText("{}. {}\n".format(cur + 1, meaning['Tags']))
@@ -124,9 +128,14 @@ class SearchFrame(wx.Frame):
 
     def search_word(self, event):
         self.word_search = WordSearch(self.search_field.GetValue())
-        print(self.search_field.GetValue())
-        print(self.word_search.searched_word)
-        print(self.word_search.word_dict['Meanings'][0])
+        self.check_error()
+    
+    def next_result(self, event):
+        self.word_search.next_word()
+        self.check_error()
+    
+    def prev_result(self, event):
+        self.word_search.prev_word()
         self.check_error()
 
 if __name__ == '__main__':

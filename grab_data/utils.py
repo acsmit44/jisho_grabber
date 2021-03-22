@@ -11,7 +11,7 @@ def isHiragana(c):
 
 # Checks if a character is Katakana, returning true if yes and false otherwise
 def isKatakana(c):
-    return True if 0x30a1 <= ord(c) and ord(c) <= 0x30fa else False
+    return True if 0x30a1 <= ord(c) and ord(c) <= 0x30ff else False
 
 # Checks if a character is Hiragana or Katakana, returning true if yes and
 # false otherwise

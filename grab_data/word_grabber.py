@@ -10,15 +10,15 @@ from bs4 import BeautifulSoup
 from utils import isKana
 
 class WordSearch:
-    cur_word, max_words, page = 0, 0, 0
-    word_tag, primary_tag = None, None
-    all_words = []
-    word_dict = {}
-    error_msg = "No error."
-
     def __init__(self, searched_word):
+        self.cur_word, self.max_words, self.page = 0, 0, 0
+        self.word_tag, self.primary_tag = None, None
+        self.word_dict = {}
+        self.all_words = []
+        self.error_msg = "No error."
         self.searched_word = searched_word.replace(' ', '%20').replace('#', '%23')
-        self.next_word()
+        self.check_search()
+        self.load_data()
 
     def __del__(self):
         print("Deleted WordSearch instance.")
@@ -42,7 +42,7 @@ class WordSearch:
                 new_words = list(self.primary_tag.find_all('div', class_='concept_light clearfix'))
                 self.all_words.extend(new_words)
                 self.max_words += len(new_words)
-        elif self.cur_word == self.max_words:
+        elif self.cur_word == self.max_words - 1:
             if self.primary_tag.find('a', class_='more') is not None:
                 self.primary_tag = self.get_soup().find('div', id='primary')
                 new_words = list(self.primary_tag.find_all('div', class_='concept_light clearfix'))
@@ -104,29 +104,30 @@ class WordSearch:
         self.error_msg = "No error."
         self.check_search()
         # increment buffer if cur_word is not pointing to the head of the array
-        if self.cur_word < self.max_words:
-            self.load_data()
+        if self.cur_word < self.max_words - 1:
             self.cur_word += 1
         else:
             self.error_msg = "Error: Cannot go forward."
             print(self.error_msg)
+        self.load_data()
     
     def prev_word(self):
         self.error_msg = "No error."
         # decrement buffer if possible
         if self.cur_word > 0:
-            self.load_data()
             self.cur_word -= 1
         else:
             self.error_msg = "Error: Cannot go back."
             print(self.error_msg)
+        self.load_data()
 
     def load_data(self):
-        self.word_dict = {}
-        self.word_tag = self.all_words[self.cur_word]
-        self.get_word_and_reading()
-        self.get_word_info()
-        self.get_word_meanings()
+        if self.cur_word >= 0 and self.cur_word < self.max_words:
+            self.word_dict = {}
+            self.word_tag = self.all_words[self.cur_word]
+            self.get_word_and_reading()
+            self.get_word_info()
+            self.get_word_meanings()
 
 if __name__ == '__main__':
     # Tests attempts to go forward and backward in the search results
@@ -135,15 +136,16 @@ if __name__ == '__main__':
         jisho_word.next_word()
     for i in range(5):
         jisho_word.next_word()
-    for i in range(3):
+    for i in range(13):
         jisho_word.prev_word()
-    for i in range(5):
+    jisho_word = WordSearch('hello')
+    for i in range(42):
         jisho_word.next_word()
     for i in range(15):
-        jisho_word.prev_word()
+        jisho_word.next_word()
     for i in range(19):
         jisho_word.next_word()
-    for i in range(25):
+    for i in range(20):
         jisho_word.next_word()
     for i in range(19):
         jisho_word.next_word()
