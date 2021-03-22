@@ -6,7 +6,7 @@
 
 ## Dependencies
 
-This program was written in Python version 3.8.5.  It depends on four Python libraries: BeautifulSoup4, requests, wxPython, and [genanki](https://github.com/kerrickstaley/genanki).  BeautifulSoup4 and requests can be installed with a simple `pip install beautifulsoup4` and `pip install requests` command on both Windows and Linux.  Installing genanki is very simple as well.  First, clone the repository.  Then, on Linux, one can simply use `make` to run the Makefile, which will do the work for you.  On Windows, open a Powershell window as admin and run the command `python setup.py install --user` to install (or `python3` depending on your command shortcut).
+This program was written in Python version 3.8.5.  It depends on four Python libraries: BeautifulSoup4, requests, wxPython, and [genanki](https://github.com/kerrickstaley/genanki).  BeautifulSoup4, requests, and wxPython can be installed with a simple `pip install {library name}` command on both Windows and Linux.  Installing genanki is very simple as well.  First, clone the repository.  Then, on Linux, cd into the repository directory and use `make` to run the Makefile, which will do the work for you.  On Windows, open a Powershell window as admin, cd into the repository directory, and run the command `python setup.py install --user` to install (or `python3` depending on your command shortcut).
 
 ## Missing Features
 
