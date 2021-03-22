@@ -16,9 +16,9 @@ engtojpn_back  = '''{{FrontSide}}
 <span style="font-size: 100px; font-family: Mincho;">{{Word}}</span><br>
 <span style="font-size: 32px; ">{{Reading}}<br /><br></span>
 
-<span style="font-size: 22px; ">Parts of speech: {{Parts of speech}}<br></span>
+<span style="font-size: 22px; ">Part(s) of speech: {{Parts of speech}}<br></span>
 <span style="font-size: 22px; ">JLPT Level: {{JLPT Level}}<br></span>
-<span style="font-size: 22px; ">Common word? : {{Common word}}<br></span>
+<span style="font-size: 22px; color: rgb(0,200,0)">{{Common word}}</span>
 <span><a  href="http://jisho.org/word/{{Word}}">Jisho reference</a></span>'''
 
 jpntoeng_front = '''<span style=" font-size: 25px;  ">{{Word}}</span>'''
@@ -29,9 +29,9 @@ jpntoeng_back  = '''{{FrontSide}}
 <span style="font-size: 50px; font-family: Mincho;">{{Meaning}}</span><br>
 <span style="font-size: 32px; ">{{Reading}}<br /><br></span>
 
-<span style="font-size: 22px; ">Parts of speech: {{Parts of speech}}<br></span>
+<span style="font-size: 22px; ">Part(s) of speech: {{Parts of speech}}<br></span>
 <span style="font-size: 22px; ">JLPT Level: {{JLPT Level}}<br></span>
-<span style="font-size: 22px; ">Common word? : {{Common word}}<br></span>
+<span style="font-size: 22px; color: rgb(0,200,0)">{{Common word}}</span>
 <span><a  href="http://jisho.org/word/{{Word}}">Jisho reference</a></span>'''
 
 CSS = '''.card {
