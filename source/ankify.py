@@ -77,12 +77,13 @@ jisho_deck = genanki.Deck(
     'Jisho Vocab'
 )
 
-# Example of creating a new note
-new_note = genanki.Note(
-    model=jisho_vocab,
-    fields=['味覚', 'みかく', 'taste; palate; sense of taste', \
-            'Na-adjective, Noun', '1', 'Yes']
-)
+if __name__ == '__main__':
+    # Example of creating a new note
+    new_note = genanki.Note(
+        model=jisho_vocab,
+        fields=['味覚', 'みかく', 'taste; palate; sense of taste', \
+                'Na-adjective, Noun', '1', 'Yes']
+    )
 
-jisho_deck.add_note(new_note)
-genanki.Package(jisho_deck).write_to_file('output.apkg')
+    jisho_deck.add_note(new_note)
+    genanki.Package(jisho_deck).write_to_file('output.apkg')

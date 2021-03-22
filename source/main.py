@@ -5,6 +5,7 @@ Description:    Main script for processing Jisho search results and otputting
                 them in a readable and convenient way.
 '''
 
+import sys
 import json
 import os
 import wx
@@ -14,8 +15,12 @@ from search_gui import SearchFrame
 from ankify import jisho_vocab, jisho_deck
 
 if __name__ == '__main__':
-    jsonpath = os.path.join(os.getcwd(), 'grab_data', 'vocab_words.json')
-    ankipath = os.path.join(os.getcwd(), 'grab_data', 'output.apkg')
+    dumpsdir = os.path.join(os.getcwd(), 'vocab_dumps')
+    if not os.path.isdir(dumpsdir):
+        sys.exit("Error: vocab_dumps folder is missing or you are in the wrong" +\
+                 "directory.  Please try again.")
+    jsonpath = os.path.join(dumpsdir, 'vocab_words.json')
+    ankipath = os.path.join(dumpsdir, 'output.apkg')
 
     # create json if none exists
     if not os.path.exists(jsonpath):
