@@ -1,8 +1,8 @@
 '''
 Author:         Andrew Smith
 Project:        Jisho grabber
-Description:    Main script for processing Jisho search results and otputting
-                them in a readable and convenient way.
+Description:    GUI for searching and adding fields to a list of fields that
+                will be used to create Anki notes.
 '''
 
 import wx

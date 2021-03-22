@@ -1,8 +1,8 @@
 '''
 Author:         Andrew Smith
 Project:        Jisho grabber
-Description:    Main script for processing Jisho search results and otputting
-                them in a readable and convenient way.
+Description:    Main script for taking in user input via the GUI and outputting
+                an Anki deck and json with all word information.
 '''
 
 import sys
