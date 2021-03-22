@@ -7,19 +7,36 @@ Description:    Main script for processing Jisho search results and otputting
 
 import json
 import os
+import wx
+import genanki
 from word_grabber import WordSearch
+from search_gui import SearchFrame
+from ankify import jisho_vocab, jisho_deck
 
-jsonpath = os.path.join(os.getcwd(), 'grab_data', 'vocab_words.json')
+if __name__ == '__main__':
+    jsonpath = os.path.join(os.getcwd(), 'grab_data', 'vocab_words.json')
 
-print(os.path.exists(jsonpath))
-if not os.path.exists(jsonpath):
+    if not os.path.exists(jsonpath):
+        print("Creating vocab_words.json...")
+        with open(jsonpath, 'w') as outfile:
+            json.dump([], outfile, indent=2)
+
+    with open(jsonpath, 'r') as infile:
+        all_vocab = json.load(infile)
+
+    app = wx.App()
+    frame = SearchFrame()
+    app.MainLoop()
+
+    for new_note_fields in frame.fields_list:
+        new_note = genanki.Note(
+            model=jisho_vocab,
+            fields=new_note_fields
+        )
+        jisho_deck.add_note(new_note)
+    if len(frame.fields_list) > 0:
+        genanki.Package(jisho_deck).write_to_file('output.apkg')
+        all_vocab.extend(frame.fields_list)
+
     with open(jsonpath, 'w') as outfile:
-        json.dump([], outfile, indent=2)
-
-with open(jsonpath, 'r') as infile:
-    data = json.load(infile)
-
-jisho_search = WordSearch('taste')
-
-with open(jsonpath, 'w') as outfile:
-    json.dump(data, outfile, indent=2)
+        json.dump(all_vocab, outfile, indent=2)

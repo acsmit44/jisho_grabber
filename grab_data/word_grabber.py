@@ -19,9 +19,6 @@ class WordSearch:
         self.searched_word = searched_word.replace(' ', '%20').replace('#', '%23')
         self.check_search()
         self.load_data()
-
-    def __del__(self):
-        print("Deleted WordSearch instance.")
     
     def get_soup(self):
         self.page += 1
@@ -80,7 +77,7 @@ class WordSearch:
                 self.word_dict['JLPT'] = tag.split(" ")[1][1]
     
     def get_word_meanings(self):
-        meanings_dict = {'Meaning(s)': None, 'Tags': None}
+        meanings_dict = {'Meaning(s)': '', 'Tags': ''}
         meanings_list = []
         meanings_info = self.word_tag.find('div', class_='meanings-wrapper')
         meanings_children = meanings_info.findChildren('div', class_='meaning-wrapper', \
@@ -97,7 +94,7 @@ class WordSearch:
                     continue
                 meanings_dict['Tags'] = child.previous_sibling.get_text().strip()
             meanings_list.append(meanings_dict)
-            meanings_dict = {'Meaning(s)': None, 'Tags': None}
+            meanings_dict = {'Meaning(s)': '', 'Tags': ''}
         self.word_dict['Meanings'] = meanings_list
     
     def next_word(self):
@@ -131,23 +128,14 @@ class WordSearch:
 
 if __name__ == '__main__':
     # Tests attempts to go forward and backward in the search results
-    jisho_word = WordSearch('')
-    for i in range(5):
-        jisho_word.next_word()
-    for i in range(5):
-        jisho_word.next_word()
-    for i in range(13):
-        jisho_word.prev_word()
     jisho_word = WordSearch('hello')
+    for i in range(50):
+        jisho_word.next_word()
+    for i in range(45):
+        jisho_word.prev_word()
+    for i in range(3):
+        jisho_word.prev_word()
     for i in range(42):
         jisho_word.next_word()
-    for i in range(15):
+    for i in range(5):
         jisho_word.next_word()
-    for i in range(19):
-        jisho_word.next_word()
-    for i in range(20):
-        jisho_word.next_word()
-    for i in range(19):
-        jisho_word.next_word()
-    for i in range(19):
-        jisho_word.prev_word()
