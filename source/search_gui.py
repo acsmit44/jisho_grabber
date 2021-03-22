@@ -97,20 +97,21 @@ class SearchFrame(wx.Frame):
         vert_sizer.Add(wx.StaticLine(self, style=wx.LI_HORIZONTAL), 0, \
                        wx.ALL|wx.EXPAND, 10)
 
-        choice_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        choice_label = wx.StaticText(self, label='Choose a meaning:', size=(-1, 20))
-        choice_sizer.Add(choice_label, proportion=0, flag=wx.RIGHT|wx.LEFT, border=8)
-        self.meaning_select = wx.Choice(self)
-        self.meaning_select.Bind(wx.EVT_CHOICE, self.get_meaning_choice)
-        choice_sizer.Add(self.meaning_select, proportion=0)
-        vert_sizer.Add(choice_sizer, proportion=0, flag=wx.RIGHT| \
-                       wx.ALIGN_CENTER_HORIZONTAL, border=8)
-
         hsizer_5 = wx.BoxSizer(wx.HORIZONTAL)
+        choice_label = wx.StaticText(self, label='Choose a meaning:', size=(-1, 20))
+        hsizer_5.Add(choice_label, proportion=0, flag=wx.RIGHT|wx.LEFT, border=8)
+        self.meaning_select = wx.Choice(self, size=(40, 20))
+        self.meaning_select.Bind(wx.EVT_CHOICE, self.get_meaning_choice)
+        hsizer_5.Add(self.meaning_select, proportion=0)
+        hsizer_5.AddSpacer(15)
         self.add_button = wx.Button(self, label='Add to Deck')
         self.add_button.Bind(wx.EVT_BUTTON, self.add_note)
-        hsizer_5.Add(self.add_button, proportion=1, flag=wx.RIGHT|wx.LEFT|wx.BOTTOM, border=8)
-        vert_sizer.Add(hsizer_5, flag=wx.EXPAND)
+        hsizer_5.Add(self.add_button, proportion=0, flag=wx.RIGHT|wx.LEFT, border=8)
+        vert_sizer.Add(hsizer_5, proportion=0, flag=wx.RIGHT|wx.LEFT| \
+                       wx.ALIGN_CENTER_HORIZONTAL, border=8)
+
+        vert_sizer.Add(wx.StaticLine(self, style=wx.LI_HORIZONTAL), 0, \
+                       wx.ALL|wx.EXPAND, 10)
 
         self.add_result = wx.StaticText(self, label='')
         self.add_result.SetForegroundColour(self.green)
@@ -131,18 +132,24 @@ class SearchFrame(wx.Frame):
             self.search_error.SetForegroundColour(self.red)
         self.search_error.GetContainingSizer().Layout()
         return bool(self.word_search.error_msg == "No error.")
-
-    def set_fields(self):
+    
+    def reset_textctrls(self):
         self.word_result.Clear()
         self.word_reading.Clear()
         self.jlpt_level.Clear()
         self.common_word.Clear()
         self.meanings_body.Clear()
         self.meaning_select.Clear()
+
+    def set_fields(self):
+        self.reset_textctrls()
         self.word_result.SetValue(self.word_search.word_dict['Word'])
         self.word_reading.SetValue(self.word_search.word_dict['Reading'])
         self.jlpt_level.SetValue(self.word_search.word_dict['JLPT'])
-        self.common_word.SetValue(self.word_search.word_dict['Common'])
+        if self.word_search.word_dict['Common'] == "":
+            self.common_word.SetValue("No")
+        else:
+            self.common_word.SetValue("Yes")
         for cur, meaning in enumerate(self.word_search.word_dict['Meanings']):
             if meaning['Tags'] != 'N/A':
                 self.meanings_body.AppendText("{}. {}\n".format(cur + 1, meaning['Tags']))
@@ -159,6 +166,8 @@ class SearchFrame(wx.Frame):
     def search_word(self, event):
         self.word_search = WordSearch(self.search_field.GetValue())
         self.check_error()
+        if self.word_search.error_msg != "No error.":
+            self.reset_textctrls()
     
     def next_result(self, event):
         self.word_search.next_word()
