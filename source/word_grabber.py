@@ -44,7 +44,7 @@ class WordSearch:
                 self.error_msg = 'Error: No results.  Please try again.'
                 self.error_code = 1
             else:
-                new_words = list(exact_block.find_all('div', class_='concept_light clearfix'))
+                new_words = list(self.primary_tag.find_all('div', class_='concept_light clearfix'))
                 self.all_words.extend(new_words)
                 self.max_words += len(new_words)
         # if the current word is the last word on the page, try getting the next page
@@ -58,21 +58,40 @@ class WordSearch:
     def get_word_and_reading(self):
         word_info = self.word_tag.find('div', class_='concept_light-representation')
         # list comprehension to extract whole word as string
-        word = "".join([text.get_text().strip() for text in
-                        word_info.find_all('span', class_='text')])
+        word = "".join([text.get_text().strip() for text in \
+            word_info.find_all('span', class_='text')])
         # list comprehension to extract kanji readings (furigana on Jisho)
         furigana = [furi.get_text().strip() for furi in \
-                    word_info.find('span', class_='furigana').find_all('span')]
+            word_info.find('span', class_='furigana').find_all('span')]
         # weird version of furigana tag that crashed my program once
+        reading = ""
+        word_with_furigana = "<ruby>"
         if word_info.find('ruby', class_='furigana-justify') is not None:
-            reading = word_info.find('ruby', class_='furigana-justify').find('rt').get_text().strip()
+            all_ruby = word_info.find('ruby', class_='furigana-justify').findChildren()
+            for child in all_ruby:
+                if child.name != 'rb' and child.name != 'rt':
+                    word_with_furigana += child.get_text().strip()
+                    reading += child.get_text().strip()
+                elif child.name == 'rt':
+                    word_with_furigana += "<rb>{}</rb>".format(child.previous_sibling.get_text().strip())
+                    word_with_furigana += "<rt>{}</rt>".format(child.get_text().strip())
+                    reading += child.get_text().strip()
         else:
-            reading = ""
             for cur in range(len(word)):
                 # append current char if hiragana, and append kanji reading otherwise
                 reading += word[cur] if isKana(word[cur]) else furigana[cur]
+                word_with_furigana += word[cur] if isKana(word[cur]) else \
+                    "{}<rt>{}</rt>".format(word[cur], furigana[cur])
+        word_with_furigana += "</ruby>"
+        has_kana = False
+        for char in word:
+            if isKana(char):
+                has_kana = True
+                break
+        word_with_furigana += "<br>" if not has_kana else ""
         self.word_dict['Word'] = word
-        self.word_dict['Reading'] = reading
+        self.word_dict['Kana_only'] = reading
+        self.word_dict['Reading'] = word_with_furigana
     
     def get_word_info(self):
         self.word_tag_info = self.word_tag.find('div', class_='concept_light-status')
@@ -147,11 +166,11 @@ class WordSearch:
 
 if __name__ == '__main__':
     # Tests attempts to go forward and backward in the search results
-    jisho_word = WordSearch('hello')
-    for i in range(50):
+    jisho_word = WordSearch('taste')
+    for i in range(43):
         jisho_word.next_word()
     for i in range(45):
-        jisho_word.prev_word()
+        jisho_word.next_word()
     for i in range(3):
         jisho_word.prev_word()
     for i in range(42):
