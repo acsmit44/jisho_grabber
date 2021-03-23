@@ -8,30 +8,28 @@ Description:    The description for Anki notes, models, and decks are kept
 
 import genanki
 
-engtojpn_front = '''<span style=" font-size: 25px;  ">{{Meaning}}</span>'''
+engtojpn_front = '''<span style=" font-size: 40px;">{{Meaning}}</span>'''
 
 engtojpn_back  = '''{{FrontSide}}
 
 <hr id=answer>
-<span style="font-size: 100px; font-family: Mincho;">{{Word}}</span><br>
-<span style="font-size: 32px; ">{{Reading}}<br /><br></span>
+<span style="font-size: 75px; font-family: Mincho;">{{Reading}}</span><br />
 
 <span style="font-size: 22px; ">Part(s) of speech: {{Parts of speech}}<br></span>
 <span style="font-size: 22px; ">JLPT Level: {{JLPT Level}}<br></span>
 <span style="font-size: 22px; color: rgb(0,200,0)">{{Common word}}</span>
 <span><a  href="http://jisho.org/word/{{Word}}">Jisho reference</a></span>'''
 
-jpntoeng_front = '''<span style=" font-size: 25px;  ">{{Word}}</span>'''
+jpntoeng_front = '''<span style=" font-size: 75px; font-family: Mincho;">{{Word}}</span>'''
 
-jpntoeng_back  = '''{{FrontSide}}
+jpntoeng_back  = '''<span style=" font-size: 75px; font-family: Mincho;">{{Reading}}</span>
 
 <hr id=answer>
-<span style="font-size: 50px; font-family: Mincho;">{{Meaning}}</span><br>
-<span style="font-size: 32px; ">{{Reading}}<br /><br></span>
+<span style="font-size: 40px;">{{Meaning}}</span><br /><br>
 
 <span style="font-size: 22px; ">Part(s) of speech: {{Parts of speech}}<br></span>
 <span style="font-size: 22px; ">JLPT Level: {{JLPT Level}}<br></span>
-<span style="font-size: 22px; color: rgb(0,200,0)">{{Common word}}</span>
+<span style="font-size: 22px; color: rgb(0,200,0);">{{Common word}}</span>
 <span><a  href="http://jisho.org/word/{{Word}}">Jisho reference</a></span>'''
 
 CSS = '''.card {
