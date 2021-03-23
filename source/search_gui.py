@@ -144,7 +144,7 @@ class SearchFrame(wx.Frame):
     def set_fields(self):
         self.reset_textctrls()
         self.word_result.SetValue(self.word_search.word_dict['Word'])
-        self.word_reading.SetValue(self.word_search.word_dict['Reading'])
+        self.word_reading.SetValue(self.word_search.word_dict['Kana_only'])
         self.jlpt_level.SetValue(self.word_search.word_dict['JLPT'])
         if self.word_search.word_dict['Common'] == "":
             self.common_word.SetValue("No")
