@@ -10,6 +10,7 @@ import wx.lib.scrolledpanel
 from word_grabber import WordSearch
 import genanki
 from ankify import jisho_vocab, jisho_deck
+from utils import kana, kanji
 
 # Needs to include word, reading, meanings, common or not, and JLPT level
 class SearchFrame(wx.Frame):
@@ -47,6 +48,7 @@ class SearchFrame(wx.Frame):
         self.search_error.SetForegroundColour(self.green)
         font = wx.Font(18, wx.DECORATIVE, wx.ITALIC, wx.NORMAL)
         self.search_error.SetFont(font)
+        self.search_error.Wrap(700)
         vert_sizer.Add(self.search_error, proportion=0, flag=wx.TOP|wx.LEFT|wx.RIGHT| \
                        wx.ALIGN_CENTER_HORIZONTAL, border=8)
 
@@ -128,6 +130,9 @@ class SearchFrame(wx.Frame):
         if self.word_search.error_code == 0:
             self.search_error.SetForegroundColour(self.green)
             self.set_fields()
+        elif self.word_search.error_code == 4:
+            self.search_error.SetForegroundColour(self.red)
+            self.set_fields()
         else:
             self.search_error.SetForegroundColour(self.red)
         self.search_error.GetContainingSizer().Layout()
@@ -143,8 +148,8 @@ class SearchFrame(wx.Frame):
 
     def set_fields(self):
         self.reset_textctrls()
-        self.word_result.SetValue(self.word_search.word_dict['Word'])
-        self.word_reading.SetValue(self.word_search.word_dict['Kana_only'])
+        self.word_result.SetValue(kanji(self.word_search.word_dict['Word']))
+        self.word_reading.SetValue(kana(self.word_search.word_dict['Word']))
         self.jlpt_level.SetValue(self.word_search.word_dict['JLPT'])
         if self.word_search.word_dict['Common'] == "":
             self.common_word.SetValue("No")
@@ -184,23 +189,25 @@ class SearchFrame(wx.Frame):
         if self.word_search.word_tag is None:
             self.add_result.SetLabel("Error: No word selected.")
             self.add_result.SetForegroundColour(self.red)
-        else:
+        elif self.word_search.error_code != 1:
             note_fields = [
                 self.word_search.word_dict['Word'],
-                self.word_search.word_dict['Reading'],
                 '', # Meanings
                 '', # Parts of speech
                 self.word_search.word_dict['JLPT'],
                 self.word_search.word_dict['Common']
             ]
             if self.meaning_num != -1:
-                note_fields[2] = self.word_search.word_dict['Meanings']\
+                note_fields[1] = self.word_search.word_dict['Meanings']\
                     [self.meaning_num]['Meaning(s)']
-                note_fields[3] = self.word_search.word_dict['Meanings']\
+                note_fields[2] = self.word_search.word_dict['Meanings']\
                     [self.meaning_num]['Tags']
             self.fields_list.append(note_fields)
             self.add_result.SetLabel("Successfully added.")
             self.add_result.SetForegroundColour(self.green)
+        else:
+            self.add_result.SetLabel("Cannot add: Invalid search.")
+            self.add_result.SetForegroundColour(self.red)
         self.search_error.GetContainingSizer().Layout()
 
 if __name__ == '__main__':
