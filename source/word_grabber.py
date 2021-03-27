@@ -56,6 +56,7 @@ class WordSearch:
                 self.max_words += len(new_words)
 
     def get_word_and_reading(self):
+        test = ""
         word_info = self.word_tag.find('div', class_='concept_light-representation')
         # list comprehension to extract whole word as string
         word = "".join([text.get_text().strip() for text in \
@@ -63,35 +64,41 @@ class WordSearch:
         # list comprehension to extract kanji readings (furigana on Jisho)
         furigana = [furi.get_text().strip() for furi in \
             word_info.find('span', class_='furigana').find_all('span')]
+        
+        # count number of kanji in the word and number of non-empty
+        # furigana instances
+        num_kanji, num_furi = 0, 0
+        for char in word:
+            if not isKana(char):
+                num_kanji += 1
+        for furi in furigana:
+            if furi:
+                num_furi += 1
+        
         # weird version of furigana tag that crashed my program once
-        reading = ""
-        word_with_furigana = "<ruby>"
         if word_info.find('ruby', class_='furigana-justify') is not None:
             all_ruby = word_info.find('ruby', class_='furigana-justify').findChildren()
             for child in all_ruby:
                 if child.name != 'rb' and child.name != 'rt':
-                    word_with_furigana += child.get_text().strip()
-                    reading += child.get_text().strip()
+                    test += child.get_text().strip()
                 elif child.name == 'rt':
-                    word_with_furigana += "<rb>{}</rb>".format(child.previous_sibling.get_text().strip())
-                    word_with_furigana += "<rt>{}</rt>".format(child.get_text().strip())
-                    reading += child.get_text().strip()
-        else:
+                    test += " %s" % child.previous_sibling.get_text().strip()
+                    test += "[%s]" % (child.get_text().strip())
+        elif len(word) == len(furigana) and num_kanji == num_furi:
             for cur in range(len(word)):
                 # append current char if hiragana, and append kanji reading otherwise
-                reading += word[cur] if isKana(word[cur]) else furigana[cur]
-                word_with_furigana += word[cur] if isKana(word[cur]) else \
-                    "{}<rt>{}</rt>".format(word[cur], furigana[cur])
-        word_with_furigana += "</ruby>"
-        has_kana = False
-        for char in word:
-            if isKana(char):
-                has_kana = True
-                break
-        word_with_furigana += "<br>" if not has_kana else ""
-        self.word_dict['Word'] = word
-        self.word_dict['Kana_only'] = reading
-        self.word_dict['Reading'] = word_with_furigana
+                test += " %s[%s]" % (word[cur], furigana[cur]) if not isKana(word[cur]) else word[cur]
+        else:
+            self.error_code = 4
+            self.error_msg = "Warning: Jisho furigana formatting error."
+            try:
+                test += "%s[%s]" % (word, "".join(furigana))
+            except:
+                test = word
+        if len(test) > 0 and test[0] == " ":
+            test = test[1:]
+        test = test.replace("[]", "")
+        self.word_dict['Word'] = test
     
     def get_word_info(self):
         self.word_tag_info = self.word_tag.find('div', class_='concept_light-status')
@@ -166,7 +173,7 @@ class WordSearch:
 
 if __name__ == '__main__':
     # Tests attempts to go forward and backward in the search results
-    jisho_word = WordSearch('taste')
+    jisho_word = WordSearch('amami')
     for i in range(43):
         jisho_word.next_word()
     for i in range(45):
