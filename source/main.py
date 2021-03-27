@@ -41,10 +41,20 @@ if __name__ == '__main__':
 
     # add new vocab to existing vocab and export as an Anki deck
     all_vocab.extend(frame.fields_list)
+    fields_len = len(jisho_vocab.fields)
+    if len(all_vocab) > 0:
+        field_pad = fields_len - len(all_vocab[0])
+    else:
+        sys.exit("No vocab was added and no vocab existed in json.  Exiting program.")
+    if field_pad < 0:
+        print("Warning: There are fewer note fields than there are fields for each vocab word.")
+    elif field_pad > 0:
+        print("Warning: There are more note fields than there are fields for each vocab word.")
     for note_fields in all_vocab:
+        note_fields.extend([''] * field_pad)
         new_note = genanki.Note(
             model=jisho_vocab,
-            fields=note_fields
+            fields=note_fields[:fields_len]
         )
         jisho_deck.add_note(new_note)
     if len(all_vocab) > 0:
