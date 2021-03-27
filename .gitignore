@@ -7,3 +7,6 @@ __pycache__/
 
 # Batch file
 *.bat
+
+# For testing
+temp/
