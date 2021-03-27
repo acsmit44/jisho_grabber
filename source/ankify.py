@@ -13,16 +13,16 @@ engtojpn_front = '''<span style=" font-size: 40px;">{{Meaning}}</span>'''
 engtojpn_back  = '''{{FrontSide}}
 
 <hr id=answer>
-<span style="font-size: 75px; font-family: Mincho;">{{Reading}}</span><br />
+<span style="font-size: 75px; font-family: Mincho;">{{furigana:Word}}</span><br />
 
 <span style="font-size: 22px; ">Part(s) of speech: {{Parts of speech}}<br></span>
 <span style="font-size: 22px; ">JLPT Level: {{JLPT Level}}<br></span>
 <span style="font-size: 22px; color: rgb(0,200,0)">{{Common word}}</span>
-<span><a  href="http://jisho.org/word/{{Word}}">Jisho reference</a></span>'''
+<span><a  href="http://jisho.org/word/{{kanji:Word}}">Jisho reference</a></span>'''
 
-jpntoeng_front = '''<span style=" font-size: 75px; font-family: Mincho;">{{Word}}</span>'''
+jpntoeng_front = '''<span style=" font-size: 75px; font-family: Mincho;">{{kanji:Word}}</span>'''
 
-jpntoeng_back  = '''<span style=" font-size: 75px; font-family: Mincho;">{{Reading}}</span>
+jpntoeng_back  = '''<span style=" font-size: 75px; font-family: Mincho;">{{furigana:Word}}</span>
 
 <hr id=answer>
 <span style="font-size: 40px;">{{Meaning}}</span><br /><br>
@@ -30,7 +30,7 @@ jpntoeng_back  = '''<span style=" font-size: 75px; font-family: Mincho;">{{Readi
 <span style="font-size: 22px; ">Part(s) of speech: {{Parts of speech}}<br></span>
 <span style="font-size: 22px; ">JLPT Level: {{JLPT Level}}<br></span>
 <span style="font-size: 22px; color: rgb(0,200,0);">{{Common word}}</span>
-<span><a  href="http://jisho.org/word/{{Word}}">Jisho reference</a></span>'''
+<span><a  href="http://jisho.org/word/{{kanji:Word}}">Jisho reference</a></span>'''
 
 CSS = '''.card {
  font-family: Arial;
@@ -45,11 +45,11 @@ CSS = '''.card {
 }'''
 
 jisho_vocab = genanki.Model(
-    model_id=1568352783,
+    # model_id=1568352783, # old ID
+    model_id=1608179351,
     name='Jisho Search Vocab',
     fields=[
         {'name': 'Word'},
-        {'name': 'Reading'},
         {'name': 'Meaning'},
         {'name': 'Parts of speech'},
         {'name': 'JLPT Level'},
@@ -71,16 +71,16 @@ jisho_vocab = genanki.Model(
 )
 
 jisho_deck = genanki.Deck(
-    1457351146,
-    'Jisho Vocab'
+    # 1457351146,
+    1870039213,
+    'Jisho Vocab test'
 )
 
 if __name__ == '__main__':
     # Example of creating a new note
     new_note = genanki.Note(
         model=jisho_vocab,
-        fields=['味覚', 'みかく', 'taste; palate; sense of taste', \
-                'Na-adjective, Noun', '1', 'Yes']
+        fields=['味覚', 'Na-adjective, Noun', '1', 'Yes']
     )
 
     jisho_deck.add_note(new_note)
