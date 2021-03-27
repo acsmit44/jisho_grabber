@@ -45,7 +45,6 @@ CSS = '''.card {
 }'''
 
 jisho_vocab = genanki.Model(
-    # model_id=1568352783, # old ID
     model_id=1608179351,
     name='Jisho Search Vocab',
     fields=[
@@ -71,9 +70,8 @@ jisho_vocab = genanki.Model(
 )
 
 jisho_deck = genanki.Deck(
-    # 1457351146,
     1870039213,
-    'Jisho Vocab test'
+    'Jisho Vocab'
 )
 
 if __name__ == '__main__':
