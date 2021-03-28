@@ -4,6 +4,15 @@
 
 *This program and its author are not affiliated with the main Anki project or Jisho.org in any way.*
 
+## Version Information
+
+v1.0.0: Initial release.  Gets the job done (most of the time).
+v1.1.0:
+- Fixed yet another Jisho furigana formatting error that crashed the program in v1.0.0
+- Fixed a bug that prevented words with weird furigana from displaying in the GUI
+- Added a warning for when Jisho's furigana is weird or wrong
+- I learned that Anki has a built-in way of filtering out kana, okurigana, and okurigana+furigana from a single phrase.  For example, let's say I have an Anki note field called "Expression" with the word 日の目 in it, which has a reading of ひのめ.  By formatting and saving it as 日\[ひ\]の 目\[め\], we can use various prefixes in Anki to filter out different characters.  kanji:Expression will get 日の目 (no furigana), kana:Expression will get ひのめ, and furigana:Expression will get <ruby>日<rt>ひ</rt>の目<rt>め</rt></ruby> (if this doesn't work just imagine 日の目 but with furigana lol).  This all to say that I have changed the way jisho_grabber stores words.  I was previously storing both the word and its reading, but now only the method described above is stored.  There is a script included in v1.1.0 called `fix_json.py` which will reformat the existing `vocab_words.json` when run.  Unfortunately, importing the resulting anki deck *will* overwrite progress.  Luckily, I think I am literally the only person using this program, so it doesn't really matter.
+
 ## Motivation
 
 Up until winter of 2020, I always had a hard time studying Japanese.  Finding the motivation to learn new vocab and whatnot never came easy to me, despite the fact that I'd say I'm passionate about learning Japanese.  I knew about Anki, but didn't seriously start using it until that winter.  When I finally created some decks for vocab, studying became significantly easier.  Along with vocabulary, I also created a deck (a subset of [this all-in-one kanji deck](https://ankiweb.net/shared/info/798002504)) of all kanji with frequency rankings of 1-2500.  In addition to rote memorization, I began studying by reading and watching some stuff in Japanese without aid such as English subtitles.  During my reading or watching, I would frequently come across a word that felt significant enough to search on Jisho.  Whether it was because it came up often, or it felt familiar, or because I straight-up had no idea what the hell it meant and couldn't help but look, I found myself searching with *great* frequency.  However, here's how searching one of said words on Jisho always went:
