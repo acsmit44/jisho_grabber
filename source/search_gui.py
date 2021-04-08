@@ -15,8 +15,9 @@ from utils import kana, kanji
 # Needs to include word, reading, meanings, common or not, and JLPT level
 class SearchFrame(wx.Frame):
     word_search = WordSearch("")
-    green = (0,150,0)
-    red = (255,0,0)
+    green = (0, 150, 0)
+    red = (255, 0, 0)
+    yellow = (255, 255, 0)
     meaning_num = -1
     fields_list = []
 
@@ -131,7 +132,7 @@ class SearchFrame(wx.Frame):
             self.search_error.SetForegroundColour(self.green)
             self.set_fields()
         elif self.word_search.error_code == 4:
-            self.search_error.SetForegroundColour(self.red)
+            self.search_error.SetForegroundColour(self.yellow)
             self.set_fields()
         else:
             self.search_error.SetForegroundColour(self.red)
@@ -171,7 +172,7 @@ class SearchFrame(wx.Frame):
     def search_word(self, event):
         self.word_search = WordSearch(self.search_field.GetValue())
         self.check_error()
-        if self.word_search.error_code != 0:
+        if self.word_search.error_code != 0 and self.word_search.error_code != 4:
             self.reset_textctrls()
     
     def next_result(self, event):
