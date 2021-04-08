@@ -1,0 +1,27 @@
+MAJOR BUGS
+-------------------------------------------------------------------------------
+Description:    Certain furigana formatting errors cause the furigana to be
+                displayed at the back and okurigana at the front.
+Ex word:        unubore
+Status:         Not fixed
+
+Description:    Word is not displayed upon initial search if it has a
+                formatting error.
+Ex word:        unubore
+Status:         Fixed
+
+
+
+MINOR BUGS
+-------------------------------------------------------------------------------
+Description:    All words, both exact matches and concepts, will be put into
+                the word buffer.  This is only a bit problematic because Jisho
+                does exact matches and concepts per page, so concepts from page
+                1 will be shown before exact matches from page 2.
+Ex word:        love
+Status:         Not fixed
+
+Description:    "Warning: Jisho furigana formatting error" gets displayed even
+                when the word has no kanji in it.
+Ex word:        Yum
+Status:         Not fixed

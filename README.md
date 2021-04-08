@@ -12,6 +12,9 @@ v1.1.0:
 - Fixed a bug that prevented words with weird furigana from displaying in the GUI
 - Added a warning for when Jisho's furigana is weird or wrong
 - I learned that Anki has a built-in way of filtering out kana, okurigana, and okurigana+furigana from a single phrase.  For example, let's say I have an Anki note field called "Expression" with the word 日の目 in it, which has a reading of ひのめ.  By formatting and saving it as 日\[ひ\]の 目\[め\], we can use various prefixes in Anki to filter out different characters.  kanji:Expression will get 日の目 (no furigana), kana:Expression will get ひのめ, and furigana:Expression will get <ruby><rb>日</rb><rt>ひ</rt>の<rb>目</rb><rt>め</rt></ruby> (if this doesn't work just imagine 日の目 but with furigana lol).  This all to say that I have changed the way jisho_grabber stores words.  I was previously storing both the word and its reading, but now only the method described above is stored.  There is a script included in v1.1.0 called `fix_json.py` which will reformat the existing `vocab_words.json` when run.  Unfortunately, importing the resulting anki deck *will* overwrite progress.  Luckily, I think I am literally the only person using this program, so it doesn't really matter.
+v1.1.1:
+- Fixed a bug that caused the first word in a search to not be displayed if it has a furigana formatting error on Jisho
+- Fixed a bug that caused word-matching searches to return no results.  For example, a search for \*恋\* should find all words that contain 恋, but the program would show no results.
 
 ## Motivation
 
