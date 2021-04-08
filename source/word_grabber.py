@@ -32,15 +32,12 @@ class WordSearch:
             sys.exit("Error: There was an issue loading Jisho. Try again later.")
         soup = BeautifulSoup(webpage.content, "html.parser")
         return soup
-    
+
     def check_search(self):
         # if new search, try getting results
         if self.max_words == 0:
-            results = self.get_soup()
-            self.primary_tag = results.find('div', id='primary')
-            exact_block = self.primary_tag.find('div', class_='exact_block') if \
-                self.primary_tag is not None else None
-            if exact_block is None:
+            self.primary_tag = self.get_soup().find('div', id='primary')
+            if self.primary_tag is None:
                 self.error_msg = 'Error: No results.  Please try again.'
                 self.error_code = 1
             else:
@@ -51,12 +48,13 @@ class WordSearch:
         elif self.cur_word == self.max_words - 1:
             if self.primary_tag.find('a', class_='more') is not None:
                 self.primary_tag = self.get_soup().find('div', id='primary')
-                new_words = list(self.primary_tag.find_all('div', class_='concept_light clearfix'))
-                self.all_words.extend(new_words)
-                self.max_words += len(new_words)
+                if self.primary_tag is not None:
+                    new_words = list(self.primary_tag.find_all('div', class_='concept_light clearfix'))
+                    self.all_words.extend(new_words)
+                    self.max_words += len(new_words)
 
     def get_word_and_reading(self):
-        test = ""
+        final_word = ""
         word_info = self.word_tag.find('div', class_='concept_light-representation')
         # list comprehension to extract whole word as string
         word = "".join([text.get_text().strip() for text in \
@@ -75,30 +73,31 @@ class WordSearch:
             if furi:
                 num_furi += 1
         
-        # weird version of furigana tag that crashed my program once
+        # weird ruby version of furigana tag that crashed my program once
         if word_info.find('ruby', class_='furigana-justify') is not None:
             all_ruby = word_info.find('ruby', class_='furigana-justify').findChildren()
             for child in all_ruby:
                 if child.name != 'rb' and child.name != 'rt':
-                    test += child.get_text().strip()
+                    final_word += child.get_text().strip()
                 elif child.name == 'rt':
-                    test += " %s" % child.previous_sibling.get_text().strip()
-                    test += "[%s]" % (child.get_text().strip())
+                    final_word += " %s" % child.previous_sibling.get_text().strip()
+                    final_word += "[%s]" % (child.get_text().strip())
         elif len(word) == len(furigana) and num_kanji == num_furi:
             for cur in range(len(word)):
                 # append current char if hiragana, and append kanji reading otherwise
-                test += " %s[%s]" % (word[cur], furigana[cur]) if not isKana(word[cur]) else word[cur]
+                final_word += " %s[%s]" % (word[cur], furigana[cur]) if not isKana(word[cur]) else word[cur]
+        # update error to reflect weird jisho formatting and attempt to create a correct reading
         else:
             self.error_code = 4
             self.error_msg = "Warning: Jisho furigana formatting error."
             try:
-                test += "%s[%s]" % (word, "".join(furigana))
+                final_word += "%s[%s]" % (word, "".join(furigana))
             except:
-                test = word
-        if len(test) > 0 and test[0] == " ":
-            test = test[1:]
-        test = test.replace("[]", "")
-        self.word_dict['Word'] = test
+                final_word = word
+        if len(final_word) > 0 and final_word[0] == " ":
+            final_word = final_word[1:]
+        final_word = final_word.replace("[]", "")
+        self.word_dict['Word'] = final_word
     
     def get_word_info(self):
         self.word_tag_info = self.word_tag.find('div', class_='concept_light-status')
@@ -172,8 +171,8 @@ class WordSearch:
             self.get_word_meanings()
 
 if __name__ == '__main__':
-    # Tests attempts to go forward and backward in the search results
-    jisho_word = WordSearch('amami')
+    # Problematic words: unubore, hung
+    jisho_word = WordSearch('tasty')
     for i in range(43):
         jisho_word.next_word()
     for i in range(45):
